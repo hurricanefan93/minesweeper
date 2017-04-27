@@ -1,13 +1,55 @@
 @import 'utility';
-
 $base-text-size: 16px;
 $base-font-family: sans-serif;
 
 html {
-  @include full-height;
+  height: 100vh;
 }
 
 body {
   margin: 0;
   font: $base-text-size / 1 $base-font-family;
+  text-align: center;
+}
+
+.Gameboard {
+  display: flex;
+  justify-content: center;
+
+  tbody {
+    border-spacing: 1;
+    height: 100px;
+    width: 100px;
+    border: 1px solid black;
+    background-color: blue;
+
+    td {
+      height: 16px;
+      width: 16px;
+      border: 1px solid black;
+      text-align: center;
+      line-height: 16px;
+
+      &.unrevealed {
+        background-color: plum;
+      }
+
+      &.empty,
+      &.numbered {
+        background-color: thistle;
+      }
+
+      &.bomb {
+        background-color: blue;
+      }
+
+      &.flagged {
+        background-color: lightgreen;
+      }
+
+      &.flagbomb {
+        background-color: green;
+      }
+    }
+  }
 }
