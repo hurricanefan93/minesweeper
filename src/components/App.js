@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import GameBoard from './GameBoard'
 import { BrowserRouter as Router, Route, NavLink, Switch } from 'react-router-dom'
-
+import Home from './Home'
 class App extends Component {
   constructor () {
     super()
@@ -29,14 +29,13 @@ class App extends Component {
 
   componentDidUpdate (prevProps, prevState) {
     if (prevState.state === 'playing' && this.state.state === 'lost') {
-      setTimeout((e) => { this.setState({gameOver: true}) }, 2500)
+      setTimeout((e) => { this.setState({gameOver: true}) }, 2000)
     } else if (prevState.state === 'playing' && this.state.state === 'won') {
-      setTimeout((e) => { this.setState({gameOver: true}) }, 2500)
+      setTimeout((e) => { this.setState({gameOver: true}) }, 2000)
     }
   }
 
   check (x, y) {
-    console.log(`Im checking ${x} and ${y}`)
     window.fetch(`http://minesweeper-api.herokuapp.com/games/${this.state.id}/check?row=${y}&col=${x}`, {method: 'POST'}).then((response) => {
       return response.json()
     }).then((data) => {
@@ -48,7 +47,6 @@ class App extends Component {
   }
 
   flag (x, y) {
-    console.log(`Im flagging ${x} and ${y}`)
     window.fetch(`http://minesweeper-api.herokuapp.com/games/${this.state.id}/flag?row=${y}&col=${x}`, {method: 'POST'}).then((response) => {
       return response.json()
     }).then((data) => {
@@ -59,7 +57,6 @@ class App extends Component {
   }
 
   reset () {
-    console.log('resetting')
     this.setState({
       state: 'start'
     })
@@ -68,35 +65,37 @@ class App extends Component {
   render () {
     let view
     if (this.state.state === 'start') {
-      console.log('start')
       view = <div>
-        <h3>Avoid the Bombs</h3>
-        <NavLink to='/games/:id'>
-          <button onClick={() => this.createGame(0)}> Easy </button>
-        </NavLink>
-        <button onClick={() => this.createGame(1)}> Normal </button>
-        <button onClick={() => this.createGame(2)}> Hard </button>
+        <div className='header'>
+          <h3>Avoid the Bombs</h3>
+          <NavLink to='/games/:id'>
+            <button onClick={() => this.createGame(0)}> Easy </button>
+          </NavLink>
+          <NavLink to='/games/:id'>
+            <button onClick={() => this.createGame(1)}> Normal </button>
+          </NavLink>
+          <NavLink to='/games/:id'>
+            <button onClick={() => this.createGame(2)}> Hard </button>
+          </NavLink>
+        </div>
       </div>
     } else if (this.state.gameOver) {
       view = <div>
-        <h2>{this.state.state === 'won' ? 'You lose' : 'You won'}</h2>
-        <button onClick={() => this.reset()}> New Game? </button>
+        <NavLink to='/'>
+          <h2>{this.state.state === 'won' ? 'You win' : 'You Lose'}</h2>
+          <button onClick={() => this.reset()}> New Game? </button>
+        </NavLink>
       </div>
     } else {
       view = <GameBoard board={this.state.board} check={(x, y) => this.check(x, y)} flag={(x, y) => this.flag(x, y)} />
     }
     return <Router>
       <div className='App'>
-        <div className='header'>
-          <h1>MineSweeper</h1>
-        </div>
-        <Route exact path='/' />
         <Switch>
+          <Route exact path='/' component={Home} />
           <Route path='games' component={GameBoard} />
         </Switch>
-        <div className='Gameboard'>
-          {view}
-        </div>
+        <div className='Gameboard'>{view}</div>
         <footer>
           <h6>&copy; 2016 Garret Morales. Built at The Iron Yard - St.Pete </h6>
         </footer>

@@ -8,7 +8,6 @@ class Gameboard extends Component {
   }
 
   reset () {
-    console.logt('clicking')
     this.createGame()
   }
 
